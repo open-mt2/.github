@@ -1,4 +1,4 @@
-# OpenMT2 Client
+# OpenMT2 Project
 
 ## Disclaimer
 
@@ -6,7 +6,7 @@ This project is a personnal "sandbox" project that have no real goal but to test
 
 The project main purpose is to port the game client to linux and modernize it's architecture and build processes to better and more maintainable code. see the Procedure and Specification for more details about it.
 
-## Packages
+## Client Packages
 
 [![EterBase CI](https://github.com/open-mt2/pkg_eterbase/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_eterbase/actions)
 [![EterLocale CI](https://github.com/open-mt2/pkg_eterlocale/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_eterlocale/actions)
@@ -15,6 +15,8 @@ The project main purpose is to port the game client to linux and modernize it's 
 [![SphereLib CI](https://github.com/open-mt2/pkg_spherelib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_spherelib/actions)
 [![CWebBrowser CI](https://github.com/open-mt2/pkg_cwebbrowser/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_cwebbrowser/actions)
 [![EterLib CI](https://github.com/open-mt2/pkg_eterlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_eterlib/actions)
+[![MilesLib CI](https://github.com/open-mt2/pkg_mileslib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_mileslib/actions)
+[![EterGrnLib CI](https://github.com/open-mt2/pkg_etergrnlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_etergrnlib/actions)
 
 # Linux Port Procedure & Specifications (Hybrid C++ -> Rust Strategy)
 
@@ -53,7 +55,7 @@ Python 2.7 UI dependencies remain intact during Stage 1 to preserve UI functiona
 
 ## Package Porting Progress by Layer
 
-**Overall Progress**: **8 / 17** packages completed (**100% of Tier 1 Base Layer**, **1 / 5 of Tier 2 Core Engine Layer**, **13/13 CTest suites passing**).
+**Overall Progress**: **10 / 17** packages completed (**100% of Tier 1 Base Layer**, **3 / 5 of Tier 2 Core Engine Layer**, **15/15 CTest suites passing**).
 
 ### Tier 1 — Base & Foundation Layer (7 / 7 Completed)
 
@@ -71,16 +73,16 @@ Self-contained foundational utilities, math, VFS, image decoders, and OS compati
 
 ---
 
-### Tier 2 — Core Engine & Subsystems Layer (1 / 5 Completed)
+### Tier 2 — Core Engine & Subsystems Layer (3 / 5 Completed)
 
 Low-level rendering, windowing, input, networking, audio, 3D skeletal animation, foliage, and terrain subsystems.
 
 | Package | Standalone Repo | Description | Status | Dependencies | Planned Porting Actions |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **[`EterLib`](file:///home/straut/storage/dev/mt2client_linux/src/EterLib)** | `pkg_eterlib` | Core engine library: D3D9 device (`GrpDevice`), `StateManager`, shaders/buffers, fonts, sprites, camera, collision, window/input (`MSWindow`), and network sockets (`NetStream`). | **Completed** (`EterLib_SmokeTests` + GH Actions CI) | Tier 1 + `libjpeg`, `Threads` | 1. Ported threads/semaphores (`_beginthreadex`, `CreateSemaphore`) & Berkeley sockets (`NetStream`, `NetDatagram`, `select(m_sock + 1, ...)`).<br>2. Fixed 64-bit `CPooledObject::operator new(size_t)`, `GetWindowLongPtr`/`SetWindowLongPtr`, and `CRay::operator=`.<br>3. Guarded Win32 IMM32/TSF COM in `CIME` while preserving cross-platform text/tag handling; added memory-backed D3D9/D3DX9 compatibility layer. |
-| **[`MilesLib`](file:///home/straut/storage/dev/mt2client_linux/src/MilesLib)** | `pkg_mileslib` | Audio engine (`CSoundManager`, 2D/3D positional audio, BGM streaming) originally wrapping RAD Miles Sound System (`MSS32.DLL`). | **Next Up** *(Stage 2 Rust target)* | `EterBase`, `EterPack`, `EterLib` | 1. **Stage 1**: Replace proprietary `MSS32.DLL` calls with **miniaudio** or **SDL2_mixer** while preserving `CSoundManager` C++ interface.<br>2. **Stage 2**: Rewrite in Rust (`miles-rs` via `rodio`/`kira`). |
-| **[`EterGrnLib`](file:///home/straut/storage/dev/mt2client_linux/src/EterGrnLib)** | `pkg_etergrnlib` | 3D character/monster mesh, bone hierarchy, skinning, and skeletal animation library wrapping Granny 3D (`.gr2`). | Not started | `EterBase`, `EterPack`, `EterLib` | 1. Decouple Granny SDK interface so rendering can run in stub mode during early bring-up.<br>2. Integrate open-source `.gr2` parser/loader for 64-bit Linux. |
-| **[`SpeedTreeLib`](file:///home/straut/storage/dev/mt2client_linux/src/SpeedTreeLib)** | `pkg_speedtreelib` | Outdoor vegetation and foliage rendering library (`CSpeedTreeForest`, `SpeedTreeWrapper`) wrapping SpeedTreeRT. | Not started | `EterBase`, `EterPack`, `EterLib` | 1. Implement a clean stub for `CSpeedTreeForest` / `SpeedTreeWrapper` to remove proprietary `SpeedTreeRT.dll` dependency.<br>2. Evaluate open mesh/vegetation replacement later. |
+| **[`MilesLib`](file:///home/straut/storage/dev/mt2client_linux/src/MilesLib)** | `pkg_mileslib` | Audio engine (`CSoundManager`, 2D/3D positional audio, BGM streaming) originally wrapping RAD Miles Sound System (`MSS32.DLL`). | **Completed** (`MilesLib_SmokeTests` + GH Actions CI, *Stage 2 Rust target*) | `EterBase`, `EterPack`, `EterLib` | 1. **Stage 1**: Replaced proprietary `<miles/MSS.H>` / `MSS32.DLL` dependency with cross-platform `MSSCompat.h` supporting VFS callbacks (`CMappedFile`), 2D/3D samples, 3D provider enumeration, and BGM streams while preserving `CSoundManager`.<br>2. **Stage 2**: Rewrite in Rust (`miles-rs` via `rodio`/`kira`). |
+| **[`EterGrnLib`](file:///home/straut/storage/dev/mt2client_linux/src/EterGrnLib)** | `pkg_etergrnlib` | 3D character/monster mesh, bone hierarchy, skinning, and skeletal animation library wrapping Granny 3D (`.gr2`). | **Completed** (`EterGrnLib_SmokeTests` + GH Actions CI) | `EterBase`, `EterPack`, `EterLib` | 1. Removed proprietary `granny2.dll` / `granny24.lib` / `granny29.lib` dependency via clean-room 64-bit `GrannyCompat.h`.<br>2. Implemented 4×4 bone hierarchy `WorldPose` math, animation control clock/blending, and 4-weight CPU Linear Blend Skinning (`GrannyDeformVertices`). |
+| **[`SpeedTreeLib`](file:///home/straut/storage/dev/mt2client_linux/src/SpeedTreeLib)** | `pkg_speedtreelib` | Outdoor vegetation and foliage rendering library (`CSpeedTreeForest`, `SpeedTreeWrapper`) wrapping SpeedTreeRT. | **Next Up** | `EterBase`, `EterPack`, `EterLib` | 1. Implement a clean stub for `CSpeedTreeForest` / `SpeedTreeWrapper` to remove proprietary `SpeedTreeRT.dll` dependency.<br>2. Evaluate open mesh/vegetation replacement later. |
 | **[`PRTerrainLib`](file:///home/straut/storage/dev/mt2client_linux/src/PRTerrainLib)** | `pkg_prterrainlib` | Outdoor terrain heightmaps, quadtree patches, water textures, shadow maps, and ground splatting. | Not started | `EterBase`, `EterPack`, `EterImageLib`, `EterLib` | 1. Fix header casing and remove Win32 dependencies.<br>2. Connect terrain textures and vertex buffers with `EterLib` (`DXVK-Native`). |
 
 ---
