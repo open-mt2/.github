@@ -22,6 +22,7 @@ The project main purpose is to port the game client to linux and modernize it's 
 [![EffectLib CI](https://github.com/open-mt2/pkg_effectlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_effectlib/actions)
 [![ScriptLib CI](https://github.com/open-mt2/pkg_scriptlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_scriptlib/actions)
 [![EterPythonLib CI](https://github.com/open-mt2/pkg_eterpythonlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_eterpythonlib/actions)
+[![GameLib CI](https://github.com/open-mt2/pkg_gamelib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_gamelib/actions)
 
 # Linux Port Procedure & Specifications (Hybrid C++ -> Rust Strategy)
 
@@ -92,7 +93,7 @@ Low-level rendering, windowing, input, networking, audio, 3D skeletal animation,
 
 ---
 
-### Tier 3 — High-Level Scripting, Effects & Gameplay Layer (3 / 4 Completed)
+### Tier 3 — High-Level Scripting, Effects & Gameplay Layer (4 / 4 Completed)
 
 Visual effects, Python 2.7 host runtime, Python UI bindings, and game world/actor mechanics.
 
@@ -101,7 +102,7 @@ Visual effects, Python 2.7 host runtime, Python UI bindings, and game world/acto
 | **[`EffectLib`](file:///home/straut/storage/dev/mt2client_linux/src/EffectLib)** | `pkg_effectlib` | Particle emitters, mesh effects, effect script (`.mse`) loaders, texture animations, billboarding, and trails. | ✅ Ported | Tier 1, `EterLib`, `MilesLib` | Fixed 64-bit pointer math in update decorators, added `D3DXQuaternionRotationAxis` to `DirectXMathCompat`, normalized includes, CTest smoke suite passing. |
 | **[`ScriptLib`](file:///home/straut/storage/dev/mt2client_linux/src/ScriptLib)** | `pkg_scriptlib` | Embedded Python 2.7 runtime host (`CPythonLauncher`), custom `.pyc` marshal loader (`PythonMarshal`), and resource manager bridge. | ✅ Ported | Tier 1, `EterLib`, `Python 2.7` | Embedded Python 2.7 runtime host (`Py_NoSiteFlag = 1`), resolved C++17 `register` storage class issues (`-Wno-register`), fixed 64-bit `Py_ssize_t` in `PyObject_AsCharBuffer`, decoupled cyclic `GameLib` dependency via `RegisterDestroyHandler`, CTest smoke suite passing. |
 | **[`EterPythonLib`](file:///home/straut/storage/dev/mt2client_linux/src/EterPythonLib)** | `pkg_eterpythonlib` | Python C extension bindings for 2D/3D rendering and UI widgets (`CWindow`, buttons, editboxes, item slots, grids, bars). | ✅ Ported | `EterLib`, `ScriptLib`, `Python 2.7` | Fixed 64-bit address truncation for window/graphic handles in Python C-API, replaced Windows Shell API screenshot pathing with POSIX standard, added DirectX compatibility stubs for gamma ramps and surface descriptions, full bi-directional Python <-> C++ test suite passing. |
-| **[`GameLib`](file:///home/straut/storage/dev/mt2client_linux/src/GameLib)** | `pkg_gamelib` | Core gameplay and entity engine: actors (`ActorInstance`), items (`ItemManager`), maps (`MapOutdoor`, `MapIndoor`, `Area`), physics, and monster spawns. | **Next Up** | Tier 1, Tier 2, `EffectLib` | 1. Fix path casing in property, race, and map loaders.<br>2. Connect with ported `EterLib`, `PRTerrainLib`, `EterGrnLib`, `SpeedTreeLib`, and `MilesLib`. |
+| **[`GameLib`](file:///home/straut/storage/dev/mt2client_linux/src/GameLib)** | `pkg_gamelib` | Core gameplay and entity engine: actors (`ActorInstance`), items (`ItemManager`), maps (`MapOutdoor`, `MapIndoor`, `Area`), physics, and monster spawns. | ✅ Ported | Tier 1, Tier 2, `EffectLib` | Reorganized into Pitchfork layout, fixed 64-bit pointer truncation in `CMapManager::ApplyLight`, added missing DirectX math (`D3DXVec3Scale`, `D3DXVec3Add`, `D3DXVec3Subtract`, `D3DXVec3Lerp`, `D3DXVec3Transform`, `D3DXQuaternionRotationYawPitchRoll`), corrected non-const reference binding on temporary `std::for_each` return, fixed nested class qualification in `MapManager.h`, and added comprehensive smoke tests covering math, item manager, race manager, property manager, and actor instances. |
 
 ---
 
@@ -111,5 +112,5 @@ Final executables combining all engine libraries, network protocol handlers, and
 
 | Package | Standalone Repo | Description | Status | Dependencies | Planned Porting Actions |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[`UserInterface`](file:///home/straut/storage/dev/mt2client_linux/src/UserInterface)** | Monorepo Target (`metin2client`) | Main game client executable (`CPythonApplication`), network packet stream (`PythonNetworkStream`), player/guild/quest modules, and master game loop. | Not started *(Net packets $\rightarrow$ Stage 2 `netproto-rs`)* | All Tier 1–3 libraries | 1. Replace `WinMain` with standard `main(int argc, char** argv)`.<br>2. Wire main loop to SDL2 event pumping.<br>3. Audit 64-bit packet struct packing (`#pragma pack`) and produce final `metin2client` Linux ELF binary. |
+| **[`UserInterface`](file:///home/straut/storage/dev/mt2client_linux/src/UserInterface)** | Monorepo Target (`metin2client`) | Main game client executable (`CPythonApplication`), network packet stream (`PythonNetworkStream`), player/guild/quest modules, and master game loop. | **Next Up** *(Net packets $\rightarrow$ Stage 2 `netproto-rs`)* | All Tier 1–3 libraries | 1. Replace `WinMain` with standard `main(int argc, char** argv)`.<br>2. Wire main loop to SDL2 event pumping.<br>3. Audit 64-bit packet struct packing (`#pragma pack`) and produce final `metin2client` Linux ELF binary. |
 | **[`Config`](file:///home/straut/storage/dev/mt2client_linux/src/Config)** | Optional / Deferred | Standalone configuration utility (`config.exe` writing `metin2.cfg` resolution, audio, and graphics settings). | Deferred | Standalone | Keep deferred during client bring-up (`metin2.cfg` is plain text); optionally replace MFC GUI with lightweight SDL2/ImGui or CLI tool later. |
