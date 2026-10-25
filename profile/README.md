@@ -23,6 +23,7 @@ The project main purpose is to port the game client to linux and modernize it's 
 [![ScriptLib CI](https://github.com/open-mt2/pkg_scriptlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_scriptlib/actions)
 [![EterPythonLib CI](https://github.com/open-mt2/pkg_eterpythonlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_eterpythonlib/actions)
 [![GameLib CI](https://github.com/open-mt2/pkg_gamelib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_gamelib/actions)
+[![UserInterface CI](https://github.com/open-mt2/pkg_userinterface/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_userinterface/actions)
 
 # Linux Port Procedure & Specifications (Hybrid C++ -> Rust Strategy)
 
@@ -112,5 +113,5 @@ Final executables combining all engine libraries, network protocol handlers, and
 
 | Package | Standalone Repo | Description | Status | Dependencies | Planned Porting Actions |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[`UserInterface`](file:///home/straut/storage/dev/mt2client_linux/src/UserInterface)** | Monorepo Target (`metin2client`) | Main game client executable (`CPythonApplication`), network packet stream (`PythonNetworkStream`), player/guild/quest modules, and master game loop. | **Next Up** *(Net packets $\rightarrow$ Stage 2 `netproto-rs`)* | All Tier 1–3 libraries | 1. Replace `WinMain` with standard `main(int argc, char** argv)`.<br>2. Wire main loop to SDL2 event pumping.<br>3. Audit 64-bit packet struct packing (`#pragma pack`) and produce final `metin2client` Linux ELF binary. |
+| **[`UserInterface`](file:///home/straut/storage/dev/mt2client_linux/src/UserInterface)** | [pkg_userinterface](https://github.com/open-mt2/pkg_userinterface.git) | Main game client executable (`CPythonApplication`), network packet stream (`PythonNetworkStream`), player/guild/quest modules, and master game loop. | ✅ **Ported** (Linux Static Lib & `metin2client` ELF Executable) | All Tier 1–3 libraries | 1. Implemented standard Linux `main(int argc, char** argv)`.<br>2. Pitchfork layout + standalone CMake with dual-mode library/executable.<br>3. DirectShow stubbed, 64-bit packet alignment audited, Smoke & CTest tests passing. |
 | **[`Config`](file:///home/straut/storage/dev/mt2client_linux/src/Config)** | Optional / Deferred | Standalone configuration utility (`config.exe` writing `metin2.cfg` resolution, audio, and graphics settings). | Deferred | Standalone | Keep deferred during client bring-up (`metin2.cfg` is plain text); optionally replace MFC GUI with lightweight SDL2/ImGui or CLI tool later. |
