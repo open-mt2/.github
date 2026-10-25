@@ -19,6 +19,7 @@ The project main purpose is to port the game client to linux and modernize it's 
 [![EterGrnLib CI](https://github.com/open-mt2/pkg_etergrnlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_etergrnlib/actions)
 [![SpeedTreeLib CI](https://github.com/open-mt2/pkg_speedtreelib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_speedtreelib/actions)
 [![PRTerrainLib CI](https://github.com/open-mt2/pkg_prterrainlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_prterrainlib/actions)
+[![EffectLib CI](https://github.com/open-mt2/pkg_effectlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_effectlib/actions)
 
 # Linux Port Procedure & Specifications (Hybrid C++ -> Rust Strategy)
 
@@ -57,7 +58,7 @@ Python 2.7 UI dependencies remain intact during Stage 1 to preserve UI functiona
 
 ## Package Porting Progress by Layer
 
-**Overall Progress**: **12 / 17** packages completed (**100% of Tier 1 Base Layer**, **5 / 5 (100%) of Tier 2 Core Engine Layer**, **17/17 CTest suites passing**).
+**Overall Progress**: **13 / 17** packages completed (**100% of Tier 1 Base Layer**, **100% of Tier 2 Core Engine Layer**, **1 / 4 of Tier 3 Layer**, **18/18 CTest suites passing**).
 
 ### Tier 1 — Base & Foundation Layer (7 / 7 Completed)
 
@@ -89,14 +90,14 @@ Low-level rendering, windowing, input, networking, audio, 3D skeletal animation,
 
 ---
 
-### Tier 3 — High-Level Scripting, Effects & Gameplay Layer (0 / 4 Completed)
+### Tier 3 — High-Level Scripting, Effects & Gameplay Layer (1 / 4 Completed)
 
 Visual effects, Python 2.7 host runtime, Python UI bindings, and game world/actor mechanics.
 
 | Package | Standalone Repo | Description | Status | Dependencies | Planned Porting Actions |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[`EffectLib`](file:///home/straut/storage/dev/mt2client_linux/src/EffectLib)** | `pkg_effectlib` | Particle emitters, mesh effects, effect script (`.mse`) loaders, texture animations, billboarding, and trails. | **Next Up** | Tier 1, `EterLib`, `EterGrnLib`, `MilesLib` | 1. Fix path casing and Windows header includes.<br>2. Port particle/effect math and rendering to `DXVK-Native` & `DirectXMathCompat`. |
-| **[`ScriptLib`](file:///home/straut/storage/dev/mt2client_linux/src/ScriptLib)** | `pkg_scriptlib` | Embedded Python 2.7 runtime host (`CPythonLauncher`), custom `.pyc` marshal loader (`PythonMarshal`), and resource manager bridge. | Not started | Tier 1, `EterLib`, `Python 2.7` | 1. Link against `libpython2.7` headers and library.<br>2. Normalize `.py`/`.pyc` virtual path lookups for Unix forward slashes. |
+| **[`EffectLib`](file:///home/straut/storage/dev/mt2client_linux/src/EffectLib)** | `pkg_effectlib` | Particle emitters, mesh effects, effect script (`.mse`) loaders, texture animations, billboarding, and trails. | ✅ Ported | Tier 1, `EterLib`, `MilesLib` | Fixed 64-bit pointer math in update decorators, added `D3DXQuaternionRotationAxis` to `DirectXMathCompat`, normalized includes, CTest smoke suite passing. |
+| **[`ScriptLib`](file:///home/straut/storage/dev/mt2client_linux/src/ScriptLib)** | `pkg_scriptlib` | Embedded Python 2.7 runtime host (`CPythonLauncher`), custom `.pyc` marshal loader (`PythonMarshal`), and resource manager bridge. | **Next Up** | Tier 1, `EterLib`, `Python 2.7` | 1. Link against `libpython2.7` headers and library.<br>2. Normalize `.py`/`.pyc` virtual path lookups for Unix forward slashes. |
 | **[`EterPythonLib`](file:///home/straut/storage/dev/mt2client_linux/src/EterPythonLib)** | `pkg_eterpythonlib` | Python C extension bindings for 2D/3D rendering and UI widgets (`CWindow`, buttons, editboxes, item slots, grids, bars). | Not started | `EterLib`, `ScriptLib`, `Python 2.7` | 1. Fix GCC/Clang C++ compliance in Python module bindings and UI widget hierarchy.<br>2. Link against `EterLib` and `ScriptLib`. |
 | **[`GameLib`](file:///home/straut/storage/dev/mt2client_linux/src/GameLib)** | `pkg_gamelib` | Core gameplay and entity engine: actors (`ActorInstance`), items (`ItemManager`), maps (`MapOutdoor`, `MapIndoor`, `Area`), physics, and monster spawns. | Not started | Tier 1, Tier 2, `EffectLib` | 1. Fix path casing in property, race, and map loaders.<br>2. Connect with ported `EterLib`, `PRTerrainLib`, `EterGrnLib`, `SpeedTreeLib`, and `MilesLib`. |
 
