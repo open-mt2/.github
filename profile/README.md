@@ -20,6 +20,7 @@ The project main purpose is to port the game client to linux and modernize it's 
 [![SpeedTreeLib CI](https://github.com/open-mt2/pkg_speedtreelib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_speedtreelib/actions)
 [![PRTerrainLib CI](https://github.com/open-mt2/pkg_prterrainlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_prterrainlib/actions)
 [![EffectLib CI](https://github.com/open-mt2/pkg_effectlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_effectlib/actions)
+[![ScriptLib CI](https://github.com/open-mt2/pkg_scriptlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_scriptlib/actions)
 
 # Linux Port Procedure & Specifications (Hybrid C++ -> Rust Strategy)
 
@@ -90,15 +91,15 @@ Low-level rendering, windowing, input, networking, audio, 3D skeletal animation,
 
 ---
 
-### Tier 3 — High-Level Scripting, Effects & Gameplay Layer (1 / 4 Completed)
+### Tier 3 — High-Level Scripting, Effects & Gameplay Layer (2 / 4 Completed)
 
 Visual effects, Python 2.7 host runtime, Python UI bindings, and game world/actor mechanics.
 
 | Package | Standalone Repo | Description | Status | Dependencies | Planned Porting Actions |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **[`EffectLib`](file:///home/straut/storage/dev/mt2client_linux/src/EffectLib)** | `pkg_effectlib` | Particle emitters, mesh effects, effect script (`.mse`) loaders, texture animations, billboarding, and trails. | ✅ Ported | Tier 1, `EterLib`, `MilesLib` | Fixed 64-bit pointer math in update decorators, added `D3DXQuaternionRotationAxis` to `DirectXMathCompat`, normalized includes, CTest smoke suite passing. |
-| **[`ScriptLib`](file:///home/straut/storage/dev/mt2client_linux/src/ScriptLib)** | `pkg_scriptlib` | Embedded Python 2.7 runtime host (`CPythonLauncher`), custom `.pyc` marshal loader (`PythonMarshal`), and resource manager bridge. | **Next Up** | Tier 1, `EterLib`, `Python 2.7` | 1. Link against `libpython2.7` headers and library.<br>2. Normalize `.py`/`.pyc` virtual path lookups for Unix forward slashes. |
-| **[`EterPythonLib`](file:///home/straut/storage/dev/mt2client_linux/src/EterPythonLib)** | `pkg_eterpythonlib` | Python C extension bindings for 2D/3D rendering and UI widgets (`CWindow`, buttons, editboxes, item slots, grids, bars). | Not started | `EterLib`, `ScriptLib`, `Python 2.7` | 1. Fix GCC/Clang C++ compliance in Python module bindings and UI widget hierarchy.<br>2. Link against `EterLib` and `ScriptLib`. |
+| **[`ScriptLib`](file:///home/straut/storage/dev/mt2client_linux/src/ScriptLib)** | `pkg_scriptlib` | Embedded Python 2.7 runtime host (`CPythonLauncher`), custom `.pyc` marshal loader (`PythonMarshal`), and resource manager bridge. | ✅ Ported | Tier 1, `EterLib`, `Python 2.7` | Embedded Python 2.7 runtime host (`Py_NoSiteFlag = 1`), resolved C++17 `register` storage class issues (`-Wno-register`), fixed 64-bit `Py_ssize_t` in `PyObject_AsCharBuffer`, decoupled cyclic `GameLib` dependency via `RegisterDestroyHandler`, CTest smoke suite passing. |
+| **[`EterPythonLib`](file:///home/straut/storage/dev/mt2client_linux/src/EterPythonLib)** | `pkg_eterpythonlib` | Python C extension bindings for 2D/3D rendering and UI widgets (`CWindow`, buttons, editboxes, item slots, grids, bars). | **Next Up** | `EterLib`, `ScriptLib`, `Python 2.7` | 1. Fix GCC/Clang C++ compliance in Python module bindings and UI widget hierarchy.<br>2. Link against `EterLib` and `ScriptLib`. |
 | **[`GameLib`](file:///home/straut/storage/dev/mt2client_linux/src/GameLib)** | `pkg_gamelib` | Core gameplay and entity engine: actors (`ActorInstance`), items (`ItemManager`), maps (`MapOutdoor`, `MapIndoor`, `Area`), physics, and monster spawns. | Not started | Tier 1, Tier 2, `EffectLib` | 1. Fix path casing in property, race, and map loaders.<br>2. Connect with ported `EterLib`, `PRTerrainLib`, `EterGrnLib`, `SpeedTreeLib`, and `MilesLib`. |
 
 ---
