@@ -18,6 +18,7 @@ The project main purpose is to port the game client to linux and modernize it's 
 [![MilesLib CI](https://github.com/open-mt2/pkg_mileslib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_mileslib/actions)
 [![EterGrnLib CI](https://github.com/open-mt2/pkg_etergrnlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_etergrnlib/actions)
 [![SpeedTreeLib CI](https://github.com/open-mt2/pkg_speedtreelib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_speedtreelib/actions)
+[![PRTerrainLib CI](https://github.com/open-mt2/pkg_prterrainlib/actions/workflows/ci.yml/badge.svg)](https://github.com/open-mt2/pkg_prterrainlib/actions)
 
 # Linux Port Procedure & Specifications (Hybrid C++ -> Rust Strategy)
 
@@ -56,7 +57,7 @@ Python 2.7 UI dependencies remain intact during Stage 1 to preserve UI functiona
 
 ## Package Porting Progress by Layer
 
-**Overall Progress**: **11 / 17** packages completed (**100% of Tier 1 Base Layer**, **4 / 5 of Tier 2 Core Engine Layer**, **16/16 CTest suites passing**).
+**Overall Progress**: **12 / 17** packages completed (**100% of Tier 1 Base Layer**, **5 / 5 (100%) of Tier 2 Core Engine Layer**, **17/17 CTest suites passing**).
 
 ### Tier 1 — Base & Foundation Layer (7 / 7 Completed)
 
@@ -74,7 +75,7 @@ Self-contained foundational utilities, math, VFS, image decoders, and OS compati
 
 ---
 
-### Tier 2 — Core Engine & Subsystems Layer (3 / 5 Completed)
+### Tier 2 — Core Engine & Subsystems Layer (5 / 5 Completed)
 
 Low-level rendering, windowing, input, networking, audio, 3D skeletal animation, foliage, and terrain subsystems.
 
@@ -84,7 +85,7 @@ Low-level rendering, windowing, input, networking, audio, 3D skeletal animation,
 | **[`MilesLib`](file:///home/straut/storage/dev/mt2client_linux/src/MilesLib)** | `pkg_mileslib` | Audio engine (`CSoundManager`, 2D/3D positional audio, BGM streaming) originally wrapping RAD Miles Sound System (`MSS32.DLL`). | **Completed** (`MilesLib_SmokeTests` + GH Actions CI, *Stage 2 Rust target*) | `EterBase`, `EterPack`, `EterLib` | 1. **Stage 1**: Replaced proprietary `<miles/MSS.H>` / `MSS32.DLL` dependency with cross-platform `MSSCompat.h` supporting VFS callbacks (`CMappedFile`), 2D/3D samples, 3D provider enumeration, and BGM streams while preserving `CSoundManager`.<br>2. **Stage 2**: Rewrite in Rust (`miles-rs` via `rodio`/`kira`). |
 | **[`EterGrnLib`](file:///home/straut/storage/dev/mt2client_linux/src/EterGrnLib)** | `pkg_etergrnlib` | 3D character/monster mesh, bone hierarchy, skinning, and skeletal animation library wrapping Granny 3D (`.gr2`). | **Completed** (`EterGrnLib_SmokeTests` + GH Actions CI) | `EterBase`, `EterPack`, `EterLib` | 1. Removed proprietary `granny2.dll` / `granny24.lib` / `granny29.lib` dependency via clean-room 64-bit `GrannyCompat.h`.<br>2. Implemented 4×4 bone hierarchy `WorldPose` math, animation control clock/blending, and 4-weight CPU Linear Blend Skinning (`GrannyDeformVertices`). |
 | **[`SpeedTreeLib`](file:///home/straut/storage/dev/mt2client_linux/src/SpeedTreeLib)** | `pkg_speedtreelib` | Outdoor vegetation and foliage rendering library (`CSpeedTreeForest`, `SpeedTreeWrapper`) wrapping SpeedTreeRT. | **Completed** (`SpeedTreeLib_SmokeTests` + GH Actions CI) | `EterBase`, `EterPack`, `EterLib` | 1. Removed proprietary `SpeedTreeRT.dll` / `SpeedTreeRT.lib` dependency via clean-room 64-bit `SpeedTreeRTCompat.h`.<br>2. Implemented SPT texture scanning (bark, composite map, self-shadow, leaves, fronds) and trunk collision cylinder generation.<br>3. Verified `CSpeedTreeForest`, `CSpeedTreeDirectX`, and `CSpeedTreeWrapper` instancing, bounds, and bounding spheres. |
-| **[`PRTerrainLib`](file:///home/straut/storage/dev/mt2client_linux/src/PRTerrainLib)** | `pkg_prterrainlib` | Outdoor terrain heightmaps, quadtree patches, water textures, shadow maps, and ground splatting. | **Next Up** | `EterBase`, `EterPack`, `EterImageLib`, `EterLib` | 1. Fix header casing and remove Win32 dependencies.<br>2. Connect terrain textures and vertex buffers with `EterLib` (`DXVK-Native`). |
+| **[`PRTerrainLib`](file:///home/straut/storage/dev/mt2client_linux/src/PRTerrainLib)** | `pkg_prterrainlib` | Outdoor terrain heightmaps, quadtree patches, water textures, shadow maps, and ground splatting. | **Completed** (`PRTerrainLib_SmokeTests` + GH Actions CI) | `EterBase`, `EterPack`, `EterImageLib`, `EterLib` | 1. Refactored into Pitchfork layout with cross-platform math macros replacing x86 inline assembly (`PR_FLOAT_TO_INT`, `PR_FLOAT_TO_FIXED`, `PR_FLOAT_ADD_TO_INT`).<br>2. Tested VFS heightmap, packed attrmap, and watermap loaders with `CEterPackManager`; verified texture coordinate scaling matrices in `CTextureSet`. |
 
 ---
 
@@ -94,7 +95,7 @@ Visual effects, Python 2.7 host runtime, Python UI bindings, and game world/acto
 
 | Package | Standalone Repo | Description | Status | Dependencies | Planned Porting Actions |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **[`EffectLib`](file:///home/straut/storage/dev/mt2client_linux/src/EffectLib)** | `pkg_effectlib` | Particle emitters, mesh effects, effect script (`.mse`) loaders, texture animations, billboarding, and trails. | Not started | Tier 1, `EterLib`, `EterGrnLib`, `MilesLib` | 1. Fix path casing and Windows header includes.<br>2. Port particle/effect math and rendering to `DXVK-Native` & `DirectXMathCompat`. |
+| **[`EffectLib`](file:///home/straut/storage/dev/mt2client_linux/src/EffectLib)** | `pkg_effectlib` | Particle emitters, mesh effects, effect script (`.mse`) loaders, texture animations, billboarding, and trails. | **Next Up** | Tier 1, `EterLib`, `EterGrnLib`, `MilesLib` | 1. Fix path casing and Windows header includes.<br>2. Port particle/effect math and rendering to `DXVK-Native` & `DirectXMathCompat`. |
 | **[`ScriptLib`](file:///home/straut/storage/dev/mt2client_linux/src/ScriptLib)** | `pkg_scriptlib` | Embedded Python 2.7 runtime host (`CPythonLauncher`), custom `.pyc` marshal loader (`PythonMarshal`), and resource manager bridge. | Not started | Tier 1, `EterLib`, `Python 2.7` | 1. Link against `libpython2.7` headers and library.<br>2. Normalize `.py`/`.pyc` virtual path lookups for Unix forward slashes. |
 | **[`EterPythonLib`](file:///home/straut/storage/dev/mt2client_linux/src/EterPythonLib)** | `pkg_eterpythonlib` | Python C extension bindings for 2D/3D rendering and UI widgets (`CWindow`, buttons, editboxes, item slots, grids, bars). | Not started | `EterLib`, `ScriptLib`, `Python 2.7` | 1. Fix GCC/Clang C++ compliance in Python module bindings and UI widget hierarchy.<br>2. Link against `EterLib` and `ScriptLib`. |
 | **[`GameLib`](file:///home/straut/storage/dev/mt2client_linux/src/GameLib)** | `pkg_gamelib` | Core gameplay and entity engine: actors (`ActorInstance`), items (`ItemManager`), maps (`MapOutdoor`, `MapIndoor`, `Area`), physics, and monster spawns. | Not started | Tier 1, Tier 2, `EffectLib` | 1. Fix path casing in property, race, and map loaders.<br>2. Connect with ported `EterLib`, `PRTerrainLib`, `EterGrnLib`, `SpeedTreeLib`, and `MilesLib`. |
