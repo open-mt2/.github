@@ -62,7 +62,7 @@ Python 2.7 UI dependencies remain intact during Stage 1 to preserve UI functiona
 
 ## Package Porting Progress by Layer
 
-**Overall Progress**: **13 / 17** packages completed (**100% of Tier 1 Base Layer**, **100% of Tier 2 Core Engine Layer**, **1 / 4 of Tier 3 Layer**, **18/18 CTest suites passing**).
+**Overall Progress**: **17 / 18** packages completed (**100% of Tier 1 Base Layer**, **100% of Tier 2 Core Engine Layer**, **100% of Tier 3 Layer**, **1 / 2 of Tier 4 Application Layer**, **22/22 CTest suites passing**).
 
 ### Tier 1 — Base & Foundation Layer (7 / 7 Completed)
 
@@ -107,7 +107,7 @@ Visual effects, Python 2.7 host runtime, Python UI bindings, and game world/acto
 
 ---
 
-### Tier 4 — Top-Level Application Layer (0 / 2 Completed)
+### Tier 4 — Top-Level Application Layer (1 / 2 Completed)
 
 Final executables combining all engine libraries, network protocol handlers, and configuration utilities.
 
