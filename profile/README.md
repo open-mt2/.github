@@ -2,7 +2,7 @@
 
 Open-source, cross-platform reimplementation of the Metin2 client, with the
 proprietary runtime dependencies replaced by clean-room equivalents. The client
-builds on Linux today; a Windows target is in progress from the same codebase.
+builds on Linux and cross-compiles for Windows from the same codebase.
 
 **Documentation, specifications and project status → <https://open-mt2.github.io/docs/>**
 
@@ -10,10 +10,14 @@ builds on Linux today; a Windows target is in progress from the same codebase.
 
 | Repository | Purpose |
 | :--- | :--- |
-| [`devkit`](https://github.com/open-mt2/devkit) | Docker development kit: builds and packages the client |
+| [`client`](https://github.com/open-mt2/client) | Metin2 game layer: GameLib, UserInterface and `metin2client` |
+| [`neoeter`](https://github.com/open-mt2/neoeter) | Engine: platform, IO, image, render, audio, model, terrain and effects |
+| [`neoeter-python`](https://github.com/open-mt2/neoeter-python) | Embedded CPython 2.7 host and Python bindings |
+| [`devkit`](https://github.com/open-mt2/devkit) | Docker devkit: toolchain base image, client image, build/packaging scripts and the vendored tree geometry cache |
+| [`speedtreebkr`](https://github.com/open-mt2/speedtreebkr) | Offline regeneration tool for the tree geometry cache |
 | [`docs`](https://github.com/open-mt2/docs) | Sources of the documentation site |
-| [`speedtreebkr`](https://github.com/open-mt2/speedtreebkr) | Offline baker for tree geometry caches |
-| [`pkg_*`](https://github.com/orgs/open-mt2/repositories?q=pkg_) | Client libraries (being consolidated into a single engine repository) |
+| [`devkit.nix`](https://github.com/open-mt2/devkit.nix) | Nix development kit |
+| [`agent-docs`](https://github.com/open-mt2/agent-docs) | AI-agent guidance, skills and issue-review archive |
 
 ## Disclaimer
 
