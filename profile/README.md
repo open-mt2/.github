@@ -14,11 +14,11 @@ with metin2 development, this organization do not provide assets other than code
 | :--- | :--- |
 | [`client`](https://github.com/open-mt2/client) | OpenMT2 Client executable |
 | [`neoeter`](https://github.com/open-mt2/neoeter) | OpenMT2 Engine: platform, IO, image, render, audio, model, terrain and effects |
+| [`neoeter-csharp`](https://github.com/open-mt2/neoeter-csharp) | CSharp bindings & Framwork for server/client packs |
 | [`neoeter-python`](https://github.com/open-mt2/neoeter-python) | Embedded CPython 2.7 host and Python bindings |
 | [`devkit`](https://github.com/open-mt2/devkit) | Docker devkit image for client build dependencies |
 | [`speedtreebkr`](https://github.com/open-mt2/speedtreebkr) | Speedtree geometry baker |
 | [`docs`](https://github.com/open-mt2/docs) | Documentation of OpenMT2 projects |
-| [`agent-docs`](https://github.com/open-mt2/agent-docs) | AI-agent guidance, skills and issue-review archive (if you wanna use AI) |
 
 ## Disclaimer
 
